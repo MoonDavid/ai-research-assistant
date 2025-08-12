@@ -22,7 +22,6 @@ import { ClarificationActionResponse, ErrorActionResponse, SearchActionResponse 
 import { ZoteroCallbacks } from '../utils/callbacks'
 import { SimplifiedStates, serializeStates } from '../utils/states'
 import * as zot from '../../apis/zotero'
-import { getLangChainConfig } from '../utils/modelConfig'
 
 type SearchMode = 'search' | 'qa'
 
@@ -269,13 +268,16 @@ interface LoadSearchChainInput {
 }
 
 export const loadSearchChain = (params: LoadSearchChainInput) => {
-  const config_data = getLangChainConfig()
+  const OPENAI_API_KEY = (Zotero.Prefs.get(`${config.addonRef}.OPENAI_API_KEY`) as string) || 'YOUR_OPENAI_API_KEY'
+  const OPENAI_MODEL = (Zotero.Prefs.get(`${config.addonRef}.OPENAI_MODEL`) as string) || 'gpt-4o'
+  const OPENAI_BASE_URL =
+    (Zotero.Prefs.get(`${config.addonRef}.OPENAI_BASE_URL`) as string) || 'https://api.openai.com/v1'
   const llm = new ChatOpenAI({
     temperature: 0,
-    openAIApiKey: config_data.apiKey,
-    modelName: config_data.model,
+    openAIApiKey: OPENAI_API_KEY,
+    modelName: OPENAI_MODEL,
     configuration: {
-      baseURL: config_data.baseURL,
+      baseURL: OPENAI_BASE_URL,
     },
   })
   const { prompt = SEARCH_DEFAULT_PROMPT, langChainCallbackManager, zoteroCallbacks, memory, mode } = params
