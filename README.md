@@ -41,13 +41,15 @@ The easist way to get started with Aria is to try one of the interactive prompts
 ![Save Chat as Notes and Annotations](assets/videos/note-annotation.gif)
 
 
-## Zotero and GPT Requirements
+## AI Model Requirements
 
 - Please note separate releases are available for Zotero 6 and 7:
   - Zotero 6: https://github.com/lifan0127/ai-research-assistant/releases/tag/0.8.0
   - Zotero 7: https://github.com/lifan0127/ai-research-assistant/releases/tag/v0.7.4
-- Aria requires the OpenAI GPT-4 model family. ([how can I access GPT-4?](https://help.openai.com/en/articles/7102672-how-can-i-access-gpt-4))
-- The visual analysis feature requires the preview access to the GPT-4 Vision model.
+- Aria supports multiple AI providers:
+  - **OpenAI**: Requires GPT-4 model family access ([how can I access GPT-4?](https://help.openai.com/en/articles/7102672-how-can-i-access-gpt-4))
+  - **Google Gemini**: Requires Google AI Studio or Vertex AI API access
+- The visual analysis feature requires vision-capable models (GPT-4 Vision or Gemini Pro Vision).
 
 ## Installation
 
@@ -62,7 +64,22 @@ For a detailed walkthrough of the installation process, please check out: https:
 
 By default, Aria can be activated by clicking the ![Aria launch button](addon/chrome/content/icons/favicon@16x16.png) button on Zoterol toolbar or through the "Shift + R" shortcut.
 
-Before using Aria, you need to provide an [OpenAI API Key](https://platform.openai.com/account/api-keys). Follow the in-app instruction to add a key and <b>restart Zotero</b>. ([screenshots](docs/configuration.md))
+### Setup with OpenAI
+
+1. Get an [OpenAI API Key](https://platform.openai.com/account/api-keys)
+2. In Zotero, go to Edit > Preferences > Aria
+3. Enter your API key and select an OpenAI model
+4. Restart Zotero
+
+### Setup with Google Gemini
+
+1. Get a [Google AI API Key](https://aistudio.google.com/app/apikey)
+2. In Zotero, go to Edit > Preferences > Aria  
+3. Enter your Google AI API key in the "OpenAI API Key" field
+4. Select a Gemini model (Gemini 1.5 Pro or Gemini 1.5 Flash)
+5. Restart Zotero
+
+For detailed Gemini setup instructions, see the [Gemini Integration Guide](docs/gemini-integration.md).
 
 After restart, you should see the activated Aria window (as shown above) and can start using it through conversations.
 
@@ -71,9 +88,20 @@ After restart, you should see the activated Aria window (as shown above) and can
 
 Aria is configurable through Edit > Preferences > Aria. Please note that some changes require Zotero restart.
 
-- __Model Selection__: Choose between the base GPT-4 model and the new GPT-4 Turbo model (Preview).
+- __Model Selection__: Choose between OpenAI models (GPT-4, GPT-4 Turbo, GPT-4o, GPT-4o mini) and Google Gemini models (Gemini 1.5 Pro, Gemini 1.5 Flash).
+- __API Configuration__: Set your API key and optionally customize the base URL for different providers.
 - __Zoom Level__: Adjust the zoom level to fit your screen resolution 
 - __Keyboard shortcut__: Change the keyboard shortcut combination to better fit your workflow.
+
+### Supported AI Models
+
+**OpenAI Models:**
+- GPT-4, GPT-4 Turbo, GPT-4o, GPT-4o mini
+
+**Google Gemini Models:**
+- Gemini 1.5 Pro, Gemini 1.5 Flash
+
+For detailed setup instructions for Gemini models, see [Gemini Integration Guide](docs/gemini-integration.md).
 
 ![Aria](assets/images/preferences.png)
 
