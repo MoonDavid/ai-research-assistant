@@ -23,6 +23,7 @@ import { createCitations } from "../apis/zotero/citation"
 import chunk from "lodash/chunk"
 import * as db from "../db/client"
 import { SimplifiedStates, UserInput } from "../typings/input"
+import { getAPIConfig } from "./utils/modelConfig"
 
 interface AssistantIds {
   routing: string
@@ -40,6 +41,52 @@ interface ResearchAssistantFields {
   messageStore: MessageStore
 }
 
+// Helper function to get API configuration based on model
+function getAPIConfig(model: string) {
+  const apiKey = getPref("OPENAI_API_KEY") as string
+  const baseURL = getPref("OPENAI_BASE_URL") as string || "https://api.openai.com/v1"
+  
+  // Check if this is a Gemini model
+  if (model.startsWith("gemini-")) {
+    // For Gemini models, we need to use Google's Vertex AI OpenAI-compatible endpoint
+    // The user should configure their base URL to point to their Vertex AI project
+    // Format: https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/publishers/google/models
+    return {
+      apiKey,
+      baseURL: baseURL.includes("googleapis.com") ? baseURL : "https://generativelanguage.googleapis.com/v1beta/openai/",
+    }
+  }
+  
+  // For OpenAI models, use standard configuration
+  return {
+    apiKey,
+    baseURL: baseURL,
+  }
+}
+
+// Helper function to get API configuration based on model
+function getAPIConfig(model: string) {
+  const apiKey = getPref("OPENAI_API_KEY") as string
+  const baseURL = getPref("OPENAI_BASE_URL") as string || "https://api.openai.com/v1"
+  
+  // Check if this is a Gemini model
+  if (model.startsWith("gemini-")) {
+    // For Gemini models, we need to use Google's Vertex AI OpenAI-compatible endpoint
+    // The user should configure their base URL to point to their Vertex AI project
+    // Format: https://LOCATION-aiplatform.googleapis.com/v1/projects/PROJECT_ID/locations/LOCATION/publishers/google/models
+    return {
+      apiKey,
+      baseURL: baseURL.includes("googleapis.com") ? baseURL : "https://generativelanguage.googleapis.com/v1beta/openai/",
+    }
+  }
+  
+  // For OpenAI models, use standard configuration
+  return {
+    apiKey,
+    baseURL: baseURL,
+  }
+}
+
 export class ResearchAssistant {
   assistants: AssistantIds
   models: ModelSet
@@ -52,9 +99,8 @@ export class ResearchAssistant {
   constructor({ assistants, models }: ResearchAssistantFields) {
     this.assistants = assistants
     this.models = models
-    this.openai = new OpenAI({
-      apiKey: getPref("OPENAI_API_KEY") as string,
-    })
+    const config = getAPIConfig(models.default)
+    this.openai = new OpenAI(config)
   }
 
   setThread(threadId: string) {

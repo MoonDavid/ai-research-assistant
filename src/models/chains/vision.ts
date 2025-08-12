@@ -18,6 +18,7 @@ import { ReadOnlyBufferWindowMemory } from '../utils/memory'
 import { SimplifiedStates, serializeStates, States } from '../utils/states'
 import { OutputActionParser } from '../utils/lcParsers'
 import * as zot from '../../apis/zotero'
+import { getLangChainConfig } from '../utils/modelConfig'
 
 const VISION_DEFAULT_PROMPT = ChatPromptTemplate.fromPromptMessages([
   SystemMessagePromptTemplate.fromTemplate(
@@ -148,17 +149,14 @@ interface LoadVisionChainInput {
 }
 
 export const loadVisionChain = (params: LoadVisionChainInput) => {
-  const OPENAI_API_KEY = (Zotero.Prefs.get(`${config.addonRef}.OPENAI_API_KEY`) as string) || 'YOUR_OPENAI_API_KEY'
-  const OPENAI_MODEL = (Zotero.Prefs.get(`${config.addonRef}.OPENAI_MODEL`) as string) || 'gpt-4o'
-  const OPENAI_BASE_URL =
-    (Zotero.Prefs.get(`${config.addonRef}.OPENAI_BASE_URL`) as string) || 'https://api.openai.com/v1'
+  const config_data = getLangChainConfig()
   const llm = new ChatOpenAI({
     temperature: 0,
-    openAIApiKey: OPENAI_API_KEY,
-    modelName: OPENAI_MODEL,
+    openAIApiKey: config_data.apiKey,
+    modelName: config_data.model,
     maxTokens: 4096,
     configuration: {
-      baseURL: OPENAI_BASE_URL,
+      baseURL: config_data.baseURL,
     },
   })
   const { prompt = VISION_DEFAULT_PROMPT, langChainCallbackManager, zoteroCallbacks, memory } = params
