@@ -19,17 +19,15 @@ import { CallbackManager, CallbackManagerForChainRun } from 'langchain/callbacks
 import { ClarificationActionResponse, RoutingActionResponse, ExecutorActionResponse } from '../utils/actions'
 import { OutputActionParser } from '../utils/lcParsers'
 import { serializeStates } from '../utils/states'
+import { getLangChainConfig } from '../utils/modelConfig'
 
-const OPENAI_API_KEY = (Zotero.Prefs.get(`${config.addonRef}.OPENAI_API_KEY`) as string) || 'YOUR_OPENAI_API_KEY'
-const OPENAI_MODEL = (Zotero.Prefs.get(`${config.addonRef}.OPENAI_MODEL`) as string) || 'gpt-4o'
-const OPENAI_BASE_URL =
-  (Zotero.Prefs.get(`${config.addonRef}.OPENAI_BASE_URL`) as string) || 'https://api.openai.com/v1'
+const config_data = getLangChainConfig()
 const llm = new ChatOpenAI({
   temperature: 0,
-  openAIApiKey: OPENAI_API_KEY,
-  modelName: OPENAI_MODEL,
+  openAIApiKey: config_data.apiKey,
+  modelName: config_data.model,
   configuration: {
-    baseURL: OPENAI_BASE_URL,
+    baseURL: config_data.baseURL,
   },
 })
 
